@@ -9,7 +9,6 @@ services:
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     mem_limit: 2g
-    cpus: 2
     environment:
       MAX_UPLOAD_MB: "25"
       CONVERT_TIMEOUT_S: "60"

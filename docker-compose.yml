@@ -1,0 +1,16 @@
+services:
+  markitdown-web:
+    build: .
+    ports:
+      - "8080:8080"
+    read_only: true          # no persistence: container filesystem is immutable
+    tmpfs:
+      - /tmp:size=256m,mode=1777   # RAM-only scratch for parsers
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 2g
+    cpus: 2
+    environment:
+      MAX_UPLOAD_MB: "25"
+      CONVERT_TIMEOUT_S: "60"
+      CONVERT_WORKERS: "2"

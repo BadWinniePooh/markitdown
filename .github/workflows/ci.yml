@@ -1,0 +1,23 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r backend/requirements-dev.txt
+      - run: cd backend && pytest -q
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: cd frontend && npm ci && npm test && npm run build
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose up -d --build --wait
+      - run: |
+          echo '<h1>Hi</h1>' > /tmp/t.html
+          curl -fs -F file=@/tmp/t.html localhost:8080/api/convert | grep '# Hi'
+      - run: test -z "$(docker diff $(docker compose ps -q))"
